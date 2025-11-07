@@ -171,7 +171,7 @@ export default function Funnel() {
                 </div>
 
                 <Droppable droppableId={`stage-${stage.id}`}>
-                  {(provided, snapshot) => (
+                  {(provided: any, snapshot: any) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
@@ -187,7 +187,7 @@ export default function Funnel() {
                           draggableId={`client-${client.id}`}
                           index={index}
                         >
-                          {(provided, snapshot) => (
+                          {(provided: any, snapshot: any) => (
                             <div
                               ref={provided.innerRef}
                               {...provided.draggableProps}

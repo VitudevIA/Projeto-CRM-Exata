@@ -9,7 +9,7 @@ interface CreditSimulatorProps {
   initialClientId?: string;
 }
 
-export default function CreditSimulator({ isOpen, onClose, initialClientId }: CreditSimulatorProps) {
+export default function CreditSimulator({ isOpen, onClose }: CreditSimulatorProps) {
   const [loanAmount, setLoanAmount] = useState("");
   const [interestRate, setInterestRate] = useState("");
   const [installments, setInstallments] = useState("");

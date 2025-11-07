@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import api from "@/services/api";
-import { Users, TrendingUp, DollarSign, Clock, CheckCircle } from "lucide-react";
+import { Users, TrendingUp, DollarSign, CheckCircle } from "lucide-react";
 
 interface DashboardStats {
   total_clients: number;

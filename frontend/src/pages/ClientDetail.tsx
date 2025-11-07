@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "@/services/api";
 import Button from "@/components/ui/Button";
-import { ArrowLeft, Phone, Mail, MapPin, Calendar, FileText, Clock } from "lucide-react";
+import { ArrowLeft, Phone, Mail, MapPin, Calendar, Clock } from "lucide-react";
 import CreditSimulator from "@/components/CreditSimulator";
 import Modal from "@/components/ui/Modal";
 import Select from "@/components/ui/Select";

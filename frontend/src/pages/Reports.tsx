@@ -3,7 +3,7 @@ import api from "@/services/api";
 import Button from "@/components/ui/Button";
 import Select from "@/components/ui/Select";
 import Input from "@/components/ui/Input";
-import { Download, TrendingUp, Users, Phone, XCircle } from "lucide-react";
+import { Download } from "lucide-react";
 
 export default function Reports() {
   const [reportType, setReportType] = useState("conversion");

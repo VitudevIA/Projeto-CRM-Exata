@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import api from "@/services/api";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
-import { Upload, FileText, CheckCircle, XCircle } from "lucide-react";
+import { Upload, FileText } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Import() {

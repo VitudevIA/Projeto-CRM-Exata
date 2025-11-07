@@ -3,7 +3,6 @@ import { Phone, X, Clock } from "lucide-react";
 import CallTabulation from "./CallTabulation";
 import CreditSimulator from "./CreditSimulator";
 import Button from "./ui/Button";
-import api from "@/services/api";
 
 interface CallPanelProps {
   isOpen: boolean;
