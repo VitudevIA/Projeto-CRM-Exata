@@ -3,7 +3,7 @@ import { supabase } from "./supabase";
 
 // Em desenvolvimento, usar proxy do Vite (requisição relativa)
 // Em produção, usar a URL completa
-const isDevelopment = import.meta.env.DEV;
+const isDevelopment = import.meta.DEV;
 const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // Se estiver em desenvolvimento, usar proxy do Vite (requisição relativa)

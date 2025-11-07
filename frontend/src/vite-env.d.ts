@@ -11,5 +11,7 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
   readonly DEV: boolean;
   readonly MODE: string;
+  readonly PROD: boolean;
+  readonly SSR: boolean;
 }
 
