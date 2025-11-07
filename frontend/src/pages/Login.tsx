@@ -36,7 +36,16 @@ export default function Login() {
       }, 300);
     } catch (err: any) {
       console.error("Login error in form:", err);
-      setError(err.message || "Erro ao fazer login");
+      // Extrair mensagem de erro corretamente
+      let errorMessage = "Erro ao fazer login";
+      if (err?.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err?.message) {
+        errorMessage = typeof err.message === "string" ? err.message : "Erro ao fazer login";
+      } else if (typeof err === "string") {
+        errorMessage = err;
+      }
+      setError(errorMessage);
       setLoading(false);
     }
   };

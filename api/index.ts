@@ -11,11 +11,27 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  // Lazy load do app Express para evitar problemas de inicialização
-  if (!app) {
-    const expressApp = await import("../backend/src/index.js");
-    app = expressApp.default;
+  try {
+    // Lazy load do app Express para evitar problemas de inicialização
+    if (!app) {
+      try {
+        const expressApp = await import("../backend/src/index.js");
+        app = expressApp.default;
+      } catch (importError: any) {
+        console.error("Error importing Express app:", importError);
+        return res.status(500).json({ 
+          error: "Erro ao inicializar servidor",
+          details: process.env.NODE_ENV === "development" ? importError?.message : undefined
+        });
+      }
+    }
+    
+    return app(req, res);
+  } catch (error: any) {
+    console.error("Handler error:", error);
+    return res.status(500).json({ 
+      error: "Erro interno do servidor",
+      details: process.env.NODE_ENV === "development" ? error?.message : undefined
+    });
   }
-  
-  return app(req, res);
 }

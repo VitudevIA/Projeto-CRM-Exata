@@ -181,7 +181,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         response: error.response?.data,
         status: error.response?.status,
       });
-      const errorMessage = error.response?.data?.error || error.message || "Erro ao fazer login";
+      // Extrair mensagem de erro corretamente
+      let errorMessage = "Erro ao fazer login";
+      if (error.response?.data?.error) {
+        errorMessage = typeof error.response.data.error === "string" 
+          ? error.response.data.error 
+          : JSON.stringify(error.response.data.error);
+      } else if (error.message) {
+        errorMessage = typeof error.message === "string" ? error.message : "Erro ao fazer login";
+      }
       throw new Error(errorMessage);
     }
   };

@@ -100,9 +100,23 @@ router.post("/login", async (req: Request, res: Response) => {
     });
 
     res.json(responseData);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Login error:", error);
-    res.status(500).json({ error: "Erro ao fazer login" });
+    console.error("Error stack:", error?.stack);
+    console.error("Error details:", {
+      message: error?.message,
+      code: error?.code,
+      name: error?.name,
+    });
+    
+    // Retornar mensagem de erro mais específica
+    const errorMessage = error?.message || "Erro ao fazer login";
+    const statusCode = error?.status || error?.statusCode || 500;
+    
+    res.status(statusCode).json({ 
+      error: errorMessage,
+      details: process.env.NODE_ENV === "development" ? error?.stack : undefined
+    });
   }
 });
 
