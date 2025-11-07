@@ -1,14 +1,10 @@
 import axios from "axios";
 import { supabase } from "./supabase";
 
-// Em desenvolvimento, usar proxy do Vite (requisição relativa)
-// Em produção, usar a URL completa
+// Sempre usar requisições relativas - o vercel.json faz o rewrite para /api/index
+// Isso funciona tanto em desenvolvimento (proxy do Vite) quanto em produção (rewrite da Vercel)
 const isDevelopment = import.meta.DEV;
-const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
-// Se estiver em desenvolvimento, usar proxy do Vite (requisição relativa)
-// Se estiver em produção, usar a URL completa
-const baseURL = isDevelopment ? "/api" : `${apiUrl}/api`;
+const baseURL = "/api";
 
 console.log("API URL configured:", baseURL);
 console.log("Environment:", isDevelopment ? "development" : "production");

@@ -19,11 +19,51 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    contentSecurityPolicy: false, // Desabilitar CSP para permitir requisições
+  })
+);
+// Configurar CORS para aceitar múltiplos origins
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
+  : ["http://localhost:5173"];
+
+// Adicionar origins da Vercel automaticamente
+if (process.env.VERCEL) {
+  const vercelUrl = process.env.VERCEL_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
+  if (vercelUrl) {
+    allowedOrigins.push(`https://${vercelUrl}`);
+  }
+  // Adicionar também o domínio de produção se existir
+  if (process.env.VERCEL_ENV === "production") {
+    allowedOrigins.push("https://projetocrmexata.vercel.app");
+    allowedOrigins.push("https://projeto-crm-exata.vercel.app");
+  }
+}
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: (origin, callback) => {
+      // Permitir requisições sem origin (mobile apps, Postman, etc)
+      if (!origin) return callback(null, true);
+      
+      // Verificar se o origin está na lista de permitidos
+      if (allowedOrigins.some((allowed) => origin.startsWith(allowed))) {
+        return callback(null, true);
+      }
+      
+      // Em desenvolvimento, permitir qualquer origin
+      if (process.env.NODE_ENV !== "production") {
+        return callback(null, true);
+      }
+      
+      callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
