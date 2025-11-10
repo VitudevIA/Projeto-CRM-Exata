@@ -1,0 +1,40 @@
+# ============================================
+# EXEMPLO DE ARQUIVO .env PARA BACKEND
+# ============================================
+# 
+# INSTRUÇÕES:
+# 1. Copie este arquivo para .env (sem o .txt)
+# 2. Preencha os valores reais
+# 3. NUNCA commite o arquivo .env no Git!
+#
+# ============================================
+
+# Porta do servidor
+PORT=3000
+
+# Ambiente
+NODE_ENV=development
+
+# Supabase (preencha com seus valores reais)
+SUPABASE_URL=https://bmzhvglbfynzlkdziftg.supabase.co
+SUPABASE_ANON_KEY=sua_chave_anon_aqui
+SUPABASE_SERVICE_KEY=sua_service_key_aqui
+
+# JWT (gere um novo com: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+JWT_SECRET=seu_jwt_secret_aqui
+
+# CORS
+CORS_ORIGIN=http://localhost:5173
+
+# ============================================
+# FORTICS BPX INTEGRATION ⭐ CONFIGURE ESTAS
+# ============================================
+DISCADOR_API_URL=http://192.168.1.10
+DISCADOR_API_KEY=lispbx@123
+# ============================================
+
+# Upload de arquivos
+MAX_FILE_SIZE=10485760
+ALLOWED_FILE_TYPES=image/jpeg,image/png,image/webp,application/pdf
+
+

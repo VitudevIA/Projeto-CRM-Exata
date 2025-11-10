@@ -94,12 +94,25 @@ export default function Clients() {
   };
 
   const handleClickToCall = async (phone: string, clientId?: string) => {
+    // Pedir ramal ao usuário
+    const ramal = prompt("Digite o número do ramal para iniciar a chamada:");
+    
+    if (!ramal) {
+      return; // Usuário cancelou
+    }
+
     try {
-      await api.post("/calls/click-to-call", {
+      const response = await api.post("/calls/click-to-call", {
         phone_number: phone,
+        ramal: ramal,
         client_id: clientId,
       });
-      alert("Chamada iniciada!");
+      
+      if (response.data.success) {
+        alert(`✅ Chamada iniciada com sucesso!\n\n📞 Ligando para: ${phone}\n📱 Ramal: ${ramal}\n\nℹ️ Nota: O 3CXPhone mostrará seu ramal, mas a chamada será conectada ao número acima.`);
+      } else {
+        alert(response.data.message || "Chamada iniciada");
+      }
     } catch (error: any) {
       console.error("Error initiating call:", error);
       alert(error.response?.data?.error || "Erro ao iniciar chamada");

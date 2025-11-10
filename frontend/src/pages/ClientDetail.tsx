@@ -19,6 +19,8 @@ export default function ClientDetail() {
   const [lossReasons, setLossReasons] = useState<any[]>([]);
   const [selectedLossReason, setSelectedLossReason] = useState("");
   const [lossObservations, setLossObservations] = useState("");
+  const [isCallModalOpen, setIsCallModalOpen] = useState(false);
+  const [callRamal, setCallRamal] = useState("1501"); // Seu ramal padrão
 
   useEffect(() => {
     if (id) {
@@ -77,6 +79,38 @@ export default function ClientDetail() {
     }
   };
 
+  const handleClickToCall = async () => {
+    if (!callRamal) {
+      alert("Por favor, informe o ramal");
+      return;
+    }
+
+    if (!client?.phone) {
+      alert("Cliente não possui telefone cadastrado");
+      return;
+    }
+
+    try {
+      const response = await api.post("/calls/click-to-call", {
+        phone_number: client.phone,
+        ramal: callRamal,
+        client_id: client.id,
+      });
+
+      if (response.data.success) {
+        alert(`✅ Chamada iniciada com sucesso!\n\n📞 Ligando para: ${client.phone}\n📱 Ramal: ${callRamal}\n\nℹ️ Nota: O 3CXPhone mostrará seu ramal, mas a chamada será conectada ao número acima.`);
+        setIsCallModalOpen(false);
+        // Recarregar histórico para mostrar a nova chamada
+        loadHistory();
+      } else {
+        alert(response.data.message || "Chamada iniciada");
+      }
+    } catch (error: any) {
+      console.error("Error initiating call:", error);
+      alert(error.response?.data?.error || "Erro ao iniciar chamada");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -117,6 +151,15 @@ export default function ClientDetail() {
           </div>
         </div>
         <div className="flex items-center space-x-2">
+          {client.phone && (
+            <Button
+              variant="primary"
+              onClick={() => setIsCallModalOpen(true)}
+            >
+              <Phone className="w-4 h-4 mr-2" />
+              Ligar
+            </Button>
+          )}
           <Button
             variant="secondary"
             onClick={() => setIsSimulatorOpen(true)}
@@ -282,6 +325,63 @@ export default function ClientDetail() {
         onClose={() => setIsSimulatorOpen(false)}
         initialClientId={id}
       />
+
+      {/* Call Modal */}
+      <Modal
+        isOpen={isCallModalOpen}
+        onClose={() => {
+          setIsCallModalOpen(false);
+          setCallRamal("1501");
+        }}
+        title="Iniciar Chamada"
+        size="md"
+      >
+        <div className="space-y-4">
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
+            <p className="text-sm text-blue-800 dark:text-blue-200">
+              <strong>📞 Ligando para:</strong>
+            </p>
+            <p className="text-lg font-bold text-blue-900 dark:text-blue-100 mt-1">
+              {client.phone}
+            </p>
+            <p className="text-xs text-blue-700 dark:text-blue-300 mt-2">
+              <strong>Nota:</strong> O 3CXPhone mostrará seu ramal ({callRamal || "1501"}), mas a chamada será conectada ao número acima.
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+              Cliente: <span className="font-medium text-gray-900 dark:text-white">{client.name}</span>
+            </p>
+          </div>
+          <Input
+            label="Ramal *"
+            type="text"
+            value={callRamal}
+            onChange={(e) => setCallRamal(e.target.value)}
+            placeholder="1501"
+            required
+          />
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setIsCallModalOpen(false);
+                setCallRamal("1501");
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleClickToCall}
+              disabled={!callRamal}
+            >
+              <Phone className="w-4 h-4 mr-2" />
+              Iniciar Chamada
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Loss Modal */}
       <Modal

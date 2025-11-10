@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Layout from "@/components/Layout";
@@ -12,6 +13,64 @@ import Tasks from "@/pages/Tasks";
 import Audit from "@/pages/Audit";
 import Reports from "@/pages/Reports";
 import Import from "@/pages/Import";
+import CallPopup from "@/components/CallPopup";
+import { useCallPolling } from "@/hooks/useCallPolling";
+
+function CallPopupWrapper() {
+  const { user } = useAuth();
+  const { callData, hasActiveCall, onTabulationComplete, isLoading } = useCallPolling();
+
+  // Debug logs
+  useEffect(() => {
+    console.log("📋 CallPopupWrapper state:", {
+      hasUser: !!user,
+      hasActiveCall,
+      hasCallData: !!callData,
+      isLoading,
+      callData: callData ? {
+        protocolo: callData.protocolo,
+        numero: callData.numero,
+        nome: callData.nome,
+      } : null,
+    });
+  }, [user, hasActiveCall, callData, isLoading]);
+
+  // Garantir que o polling está ativo quando o usuário está logado
+  useEffect(() => {
+    if (user) {
+      console.log("📋 Usuário logado detectado - polling deve estar ativo");
+    }
+  }, [user]);
+
+  if (!user) {
+    console.log("📋 CallPopupWrapper: Sem usuário");
+    return null;
+  }
+
+  if (!hasActiveCall) {
+    console.log("📋 CallPopupWrapper: Sem chamada ativa");
+    return null;
+  }
+
+  if (!callData) {
+    console.log("📋 CallPopupWrapper: Sem dados da chamada");
+    return null;
+  }
+
+  console.log("📋 CallPopupWrapper: Renderizando popup");
+
+  return (
+    <CallPopup
+      isOpen={hasActiveCall}
+      onClose={() => {
+        // Não permitir fechar sem tabular
+        console.log("📋 Tentativa de fechar popup bloqueada");
+      }}
+      data={callData}
+      onTabulationComplete={onTabulationComplete}
+    />
+  );
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -28,7 +87,12 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/login" replace />;
   }
 
-  return <Layout>{children}</Layout>;
+  return (
+    <>
+      <Layout>{children}</Layout>
+      <CallPopupWrapper />
+    </>
+  );
 }
 
 function AppRoutes() {
